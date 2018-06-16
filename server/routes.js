@@ -34,29 +34,44 @@ module.exports = [
         options: {
             validate: {
                 payload: {
-                    title: Joi.string().required()
+                    title: Joi.string().required(),
+                    body: Joi.string().required()
                 }
             }
         },
         handler: async (request, h) => {
-            const note = request.payload;
-            const [ noteid ] = await Knex('note').returning('id').insert(note);
-            return ({message: "note created", note_id: noteid });
+            const note_content = request.payload;
+            const [noteId] = await Knex('note').returning('id').insert(note_content);
+            return ({ message: "note created", createdNote: noteId });
         }
     },
     {
-        method: 'PUT',
+        method: 'PATCH',
         path: '/notes/{id}',
         options: {
             validate: {
                 payload: {
-                    title: Joi.string().required()
+                    title: Joi.string().required(),
+                    body: Joi.string().required()
                 }
             }
         },
-        handler: (request, h) => {
-            const id = request.params.id -1;
-            return ({message: `note ${id} updated`});
+        handler: async (request, h) => {
+            const id = request.params.id;
+            const note = {}
+            note.title = request.payload.title;
+            note.body = request.payload.body;
+            const patched = await Knex('note').update(note).where('id', id)
+            return ({ message: `note ${id} updated` });
+    }
+},
+{
+    method: 'DELETE',
+    path: '/notes/{id}',
+    handler: async (request, h) => {
+        const id = request.params.id;
+        const deleted = await Knex('note').where('id', id).delete();
+        return ({ message: `note ${id} deleted` });
     }
 }
 ];
