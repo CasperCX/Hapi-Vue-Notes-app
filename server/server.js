@@ -7,8 +7,8 @@ const server = new Hapi.server(({
     port: 8080,
     routes: {cors: {
         origin: ['*']
+        }
     }
-}
 }));
 
 

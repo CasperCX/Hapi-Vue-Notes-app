@@ -1,11 +1,5 @@
-const noteslist = [
-    {
-        title: "something",
-    },
-    {
-        title: "else",
-    }
-];
+const Joi = require("joi");
+const Knex = require("./db");
 
 
 module.exports = [
@@ -18,28 +12,50 @@ module.exports = [
     },
     {
         method: 'GET',
+        path: '/notes',
+        handler: async (request, h) => {
+            const noteId = 2
+            const [...notes] = await Knex('note');
+            return notes;
+        }
+    },
+    {
+        method: 'GET',
         path: '/notes/{id}',
-        handler: (request, h) => {
-            const id = request.params.id -1;
-            if (noteslist[id]) return (noteslist[id]);
-            return ({message: `Note with number ${id} not found`});
+        handler: async (request, h) => {
+            const id = request.params.id;
+            const [note] = await Knex('note').where('id', id);
+            return note;
         }
     },
     {
         method: 'POST',
-        path: '/notes',
-        handler: (request, h) => {
+        path: '/note',
+        options: {
+            validate: {
+                payload: {
+                    title: Joi.string().required()
+                }
+            }
+        },
+        handler: async (request, h) => {
             const note = request.payload;
-            noteslist.push(note);
-            return ({message: "note created"});
+            const [ noteid ] = await Knex('note').returning('id').insert(note);
+            return ({message: "note created", note_id: noteid });
         }
     },
     {
         method: 'PUT',
         path: '/notes/{id}',
+        options: {
+            validate: {
+                payload: {
+                    title: Joi.string().required()
+                }
+            }
+        },
         handler: (request, h) => {
             const id = request.params.id -1;
-            noteslist[id] = request.payload;
             return ({message: `note ${id} updated`});
     }
 }

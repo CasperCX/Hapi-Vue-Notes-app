@@ -1,16 +1,32 @@
 {
-  "name": "client",
-  "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1",
-    "react-scripts": "1.1.4"
-  },
+  "name": "client",
+  "productName": "client",
+  "description": "My badass Vue project",
+  "version": "0.0.0",
+  "license": "MIT",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "dev": "poi",
+    "build": "poi build",
+    "report": "poi build --bundle-report",
+    "serve": "serve dist --single",
+    "test": "tyu"
+  },
+  "author": {
+    "name": "Casper Groenenberg",
+    "email": "c.groenenberg@hotmail.com"
+  },
+  "dependencies": {
+    "offline-plugin": "^4.8.0",
+    "normalize.css": "^7.0.0",
+    "object-assign": "^4.1.1",
+    "promise-polyfill": "^6.0.2"
+  },
+  "devDependencies": {
+    "poi": "^9.0.0",
+    "poi-preset-bundle-report": "^2.0.0",
+    "serve": "^6.1.0",
+    "tyu": "^1.0.4",
+    "poi-preset-offline": "^9.0.0"
   }
 }
