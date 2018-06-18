@@ -1,36 +1,21 @@
 const Joi = require("joi");
 const Knex = require("./db");
-
+const Controller = require('./controllers');
 
 module.exports = [
     {
         method: 'GET',
-        path: '/',
-        handler: (request, h) => {
-            return { message: 'Hello world' }
-        }
-    },
-    {
-        method: 'GET',
         path: '/notes',
-        handler: async (request, h) => {
-            const noteId = 2
-            const [...notes] = await Knex('note');
-            return notes;
-        }
+        handler: Controller.getNotes
     },
     {
         method: 'GET',
         path: '/notes/{id}',
-        handler: async (request, h) => {
-            const id = request.params.id;
-            const [note] = await Knex('note').where('id', id);
-            return note;
-        }
+        handler: Controller.getNoteById
     },
     {
         method: 'POST',
-        path: '/note',
+        path: '/notes',
         options: {
             validate: {
                 payload: {
@@ -39,11 +24,7 @@ module.exports = [
                 }
             }
         },
-        handler: async (request, h) => {
-            const note_content = request.payload;
-            const [noteId] = await Knex('note').returning('id').insert(note_content);
-            return ({ message: "note created", createdNote: noteId });
-        }
+        handler: Controller.createNote
     },
     {
         method: 'PATCH',
@@ -56,22 +37,11 @@ module.exports = [
                 }
             }
         },
-        handler: async (request, h) => {
-            const id = request.params.id;
-            const note = {}
-            note.title = request.payload.title;
-            note.body = request.payload.body;
-            const patched = await Knex('note').update(note).where('id', id)
-            return ({ message: `note ${id} updated` });
+        handler: Controller.updateNote
+    },
+    {
+        method: 'DELETE',
+        path: '/notes/{id}',
+        handler: Controller.deleteNote
     }
-},
-{
-    method: 'DELETE',
-    path: '/notes/{id}',
-    handler: async (request, h) => {
-        const id = request.params.id;
-        const deleted = await Knex('note').where('id', id).delete();
-        return ({ message: `note ${id} deleted` });
-    }
-}
 ];
