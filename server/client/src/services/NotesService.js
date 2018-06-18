@@ -5,7 +5,7 @@ export default {
         return Api().get('notes');
     },
 
-    post (note) {
+    createNote (note) {
         return Api().post('notes', note)
     },
 

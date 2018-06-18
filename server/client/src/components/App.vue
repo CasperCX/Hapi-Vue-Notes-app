@@ -3,12 +3,27 @@
     <div class="banner">
   </div>
   <div>
+      <span v-if="error">Error fetching notes</span>
       <ul id="example-1">
         <li v-for="note in notes">
-          {{ note.id }} - {{ note.title }} : {{ note.body }} 
+          INDEX {{ note.id }} - {{ note.title }} : {{ note.body }} 
         </li>
       </ul>
   </div>
+    <input
+      type="title"
+      v-model="title"
+      placeholder="title"
+    />
+    <input
+      type="body"
+      v-model="body"
+      placeholder="body"
+    />
+  <button 
+    @click="createNote">
+    Add note
+  </button>
   </div>
 </template>
 
@@ -18,11 +33,33 @@
     name: 'app',
     data () {
       return {
+        title: '',
+        body: '',
         error: '',
         notes: []
       }
     },
-    async mounted () {
+    methods: {
+      async getNotes() {
+        try {
+          this.notes = (await NotesService.index()).data;
+        } catch (error) {
+          this.error = error.response.data.error;
+        }
+      },
+      async createNote() {
+        try {
+          await NotesService.createNote({
+            title: this.title,
+            body: this.body
+          });
+          this.getNotes();
+        } catch (error) {
+          this.error = error.response.data.error;
+        }
+      }
+    },
+    async mounted() {
       try {
         this.notes = (await NotesService.index()).data;
       } catch (error) {
