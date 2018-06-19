@@ -1,2 +1,2 @@
 # Notes-app-Hapi-Vue
-A Notes app with Hapi  + knex and Vue frontend
+A Notes app with Hapi  + Knex server and Vue frontend
